@@ -64,10 +64,10 @@ public class DigitToWordController {
 
 	@DeleteMapping(value = "/digits/{digit}")
 	public Object deleteDigit(@PathVariable int digit) {
-		int flag = digitService.deleteDigit(digit);
-		if (flag == 1)
-			return new ResponseEntity<>("delete successful..", HttpStatus.OK);
+		boolean operationFlag = digitService.deleteDigit(digit);
+		if (operationFlag)
+			return new ResponseEntity<>( HttpStatus.OK);
 		else
-			return new ResponseEntity<>("data not found...", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 }

@@ -29,79 +29,78 @@ public class DigitToWordConvert {
 	}
 
 	public int digitToWordConvert(int n) {
-		// int n=sc.nextInt();
-		// ApplicationContext context=new
-		// ClassPathXmlApplicationContext("/WEB-INF/spring.xml");
-		// DigitWord bean=context.getBean(DigitWord.class);
-		int flag = -1;
-		DigitWord bean = new DigitWord();
+
+		int operationFlag = -1;
 		if (map.containsKey(n)) {
 			return 0;
 		}
 		int digit1 = n;
-		String s[] = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven",
-				"twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
-		String s2[] = { "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety" };
-		String s3[] = { "hundred", "thousand", "lac", "crore" };
-		int cnt = 0;
-		int digit[] = new int[20];
+		String singleDigitstr[] = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+				"eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+		String twoDigitStr[] = { "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+		String postfixes[] = { "hundred", "thousand", "lac", "crore" };
+		int count = 0;
+		int digits[] = new int[20];
 		while (n != 0) {
-			digit[cnt++] = n % 10;
+			digits[count++] = n % 10;
 			n = n / 10;
 		}
-		if (cnt == 0) {
-			// System.out.println("zero");
+		if (count == 0) {
 			map.put(digit1, "zero");
-			flag = 1;
+			operationFlag = 1;
 		} else {
-			String result[] = new String[cnt];
+			String result[] = new String[count];
 			String postfix = null;
-			// System.out.println(cnt);
-			int p = -2, index = 0;
-			for (int i = 0; i < cnt; i++, p++) {
-				if (digit[i] != 0) {
-					// postfix=null;
-					if (p == 0) {
-						postfix = s3[index++];
-					} else if (p >= 0) {
-						if (p % 2 == 1) {
-							postfix = s3[index];
+			// System.out.println(count);
+			int countForPostfix = -2, index = 0;
+			for (int i = 0; i < count; i++, countForPostfix++) {
+				if (digits[i] != 0) {
+					if (countForPostfix == 0) {
+						postfix = postfixes[index++];
+					} 
+					else if (countForPostfix >= 0) {
+						if (countForPostfix % 2 == 1) {
+							postfix = postfixes[index];
 							index++;
 						}
 					}
-					// System.out.println("p: "+p+"i:"+index+" posix "+postfix);
 					if (i == 0) {
-						result[i] = s[digit[i] - 1] + " ";
-					} else if (i == 1 || i == 4 || i == 6 || i == 8) {
-						if (digit[i] < 2) {
-							result[i] = s[10 * digit[i] + digit[i - 1] - 1] + " " + (postfix == null ? "" : postfix);
+						result[i] = singleDigitstr[digits[i] - 1];
+					} 
+					else if (i == 1 || i == 4 || i == 6 || i == 8) {
+						if (digits[i] < 2) {
+							result[i] = singleDigitstr[10 * digits[i] + digits[i - 1] - 1] + " "
+									+ (postfix == null ? "" : postfix);
 							if (i - 2 >= 0) {
 								result[i] += " " + result[i - 2];
 							}
 							result[i - 1] = null;
-						} else {
+						} 
+						else {
 							if (i < 4) {
-								result[i] = s2[digit[i] - 2] + " " + (postfix == null ? "" : postfix)
+								result[i] = twoDigitStr[digits[i] - 2] + " " + (postfix == null ? "" : postfix)
 										+ (result[i - 1] == null ? "" : result[i - 1]);
 							} else {
-								result[i] = s2[digit[i] - 2] + " " + (result[i - 1] == null ? "" : result[i - 1]);
+								result[i] = twoDigitStr[digits[i] - 2] + " "
+										+ (result[i - 1] == null ? "" : result[i - 1]);
 							}
 						}
-					} else {
-						result[i] = s[digit[i] - 1] + " " + (postfix == null ? "" : postfix + " ")
+					} 
+					else {
+						result[i] = singleDigitstr[digits[i] - 1] + " " + (postfix == null ? "" : postfix + " ")
 								+ (result[i - 1] == null ? "" : result[i - 1]);
 
 					}
 				}
 			}
-			// System.out.println(result[cnt-1]);
-			map.put(digit1, result[cnt - 1]);
-			// bean.setDigit(digit1);
-			// bean.setWord(result[cnt - 1]);
+			// System.out.println(result[count-1]);
+			map.put(digit1, result[count - 1]);
+			// digitWordBean.setDigit(digit1);
+			// digitWordBean.setWord(result[count - 1]);
 
-			flag = 1;
+			operationFlag = 1;
 		}
-		return flag;
+		return operationFlag;
 	}
 
 	public DigitWord getDigit(int number) {
@@ -109,21 +108,21 @@ public class DigitToWordConvert {
 		if (!map.containsKey(number)) {
 			return null;
 		}
-		DigitWord bean = new DigitWord();
-		bean.setDigit(number);
-		bean.setWord(map.get(number));
-		return bean;
+		DigitWord digitWordBean = new DigitWord();
+		digitWordBean.setDigit(number);
+		digitWordBean.setWord(map.get(number));
+		return digitWordBean;
 	}
 
-	public int deleteDigit(int number) {
-		int flag = 0;
+	public boolean deleteDigit(int number) {
+		boolean operationFlag = false;
 		if (map.containsKey(number)) {
 			map.remove(number);
-			flag = 1;
+			operationFlag = true;
 		} else {
-			flag = -1;
+			operationFlag = false;
 		}
-		return flag;
+		return operationFlag;
 	}
 
 	public void updateDigit(int number1, int number2) {
