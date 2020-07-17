@@ -1,6 +1,9 @@
 package com.controller;
 
+import java.net.http.HttpResponse;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -29,45 +32,49 @@ public class DigitToWordController {
 	@Autowired
 	DigitToWordConvert digitService;
 
-	@PostMapping(value = "/digits/", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> digitToWord(@RequestBody Digit digit) {
-		// int num=Integer.parseInt(digit);
-		int flag = digitService.digitToWordConvert(digit.getDigit());
-		if (flag == 1)
-			return new ResponseEntity<>("successfully added...", HttpStatus.CREATED);
-		else if (flag == 0) {
-			return new ResponseEntity<>("data already exist...", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>("something might be wrong...", HttpStatus.ALREADY_REPORTED);
+	@PostMapping(value = "/digits/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	public DigitWord  digitToWord(@RequestBody Digit digit,HttpServletResponse response) {
+		System.out.println(digit.getDigit());
+		DigitWord digitWordBean = digitService.digitToWordConvert(digit.getDigit());
+		if (digitWordBean==null) {
+			
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return null;	
 		}
+		response.setStatus(HttpServletResponse.SC_CREATED);
+		return digitWordBean;
 	}
 
-	@GetMapping(value = "/digits")
-	public Map<Integer, String> getAllDigit() {
+	@GetMapping(value = "/digits",produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<Integer, String> getAllDigit(HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_OK);
 		return digitService.getMap();
 	}
 
-	@GetMapping(value = "/digits/{digit}")
-	public Object getDigit(@PathVariable int digit) {
+	@GetMapping(value = "/digits/{digit}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object getDigit(@PathVariable int digit,HttpServletResponse response) {
 		DigitWord bean = digitService.getDigit(digit);
 		if (bean == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return new ResponseEntity<>("data not exist...", HttpStatus.BAD_REQUEST);
 		}
+		response.setStatus(HttpServletResponse.SC_OK);
 		return bean;
 	}
 
 	@PutMapping(value = "/digits", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Object updateDigit(@RequestBody TwoDigit twodigit) {
+	public String updateDigit(@RequestBody TwoDigit twodigit,HttpServletResponse response) {
 		digitService.updateDigit(twodigit.getDigit1(), twodigit.getDigit2());
-		return new ResponseEntity<String>("updated successful...", HttpStatus.OK);
+		response.setStatus(HttpServletResponse.SC_OK);
+		return "updated successful...";
 	}
 
 	@DeleteMapping(value = "/digits/{digit}")
-	public Object deleteDigit(@PathVariable int digit) {
+	public void deleteDigit(@PathVariable int digit,HttpServletResponse response) {
 		boolean operationFlag = digitService.deleteDigit(digit);
 		if (operationFlag)
-			return new ResponseEntity<>( HttpStatus.OK);
+			response.setStatus(HttpServletResponse.SC_OK);
 		else
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response.setStatus(HttpServletResponse.SC_OK);
 	}
 }
