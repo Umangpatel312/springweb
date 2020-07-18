@@ -14,11 +14,12 @@ public class DigitToWordConvert {
 	private static String postfixes[] = { "hundred", "thousand", "lac", "crore" };
 	
 	private Map<Integer, String> map;
-
+	private DigitWord digitWordBean;
 	@Autowired
-	public DigitToWordConvert(Map<Integer, String> map) {
+	public DigitToWordConvert(Map<Integer, String> map,DigitWord digitWordBean) {
 		// TODO Auto-generated constructor stub
 		this.map = map;
+		this.digitWordBean=digitWordBean;
 	}
 
 	public Map<Integer, String> getMap() {
@@ -29,13 +30,11 @@ public class DigitToWordConvert {
 		String numberInStr=String.valueOf(number);
 		//if number greater than crore it will not correct input for this program so return null
 		//int number=parseInteger(numberInStr);
-		
-		if(number<0 && numberInStr.length()>9)
+		//System.out.println(number);
+		if(number<0 || numberInStr.length()>9 || map.containsKey(number))
 			return null;
 		DigitWord digitWordBean=null;
-		if (map.containsKey(number)) {
-			return null;
-		}
+		
 		int digit1 = number;
 		int count=numberInStr.length();
 		int digits[]=digitExtraciton(number,count);;
@@ -53,7 +52,7 @@ public class DigitToWordConvert {
 		return digitWordBean;
 	}
 	private DigitWord createDigitWordBean(int number,String numberInString) {
-		DigitWord digitWordBean=new DigitWord();
+		//DigitWord digitWordBean=new DigitWord();
 		digitWordBean.setDigit(number);
 		digitWordBean.setWord(numberInString);
 		return digitWordBean;
@@ -71,7 +70,7 @@ public class DigitToWordConvert {
 	}
 	
 	//conversion of given to appropriate word
-	public String convertDigitToString(int digits[]) {
+	private String convertDigitToString(int digits[]) {
 		
 		int count=digits.length;
 		String result[] = new String[count];
