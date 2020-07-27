@@ -11,6 +11,7 @@ public class DigitWord {
 		super();
 		this.digit = digit;
 		this.word = word;
+		//System.out.println(word+"..");
 	}
 	public void setDigit(int digit) {
 		this.digit = digit;

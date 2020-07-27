@@ -34,7 +34,9 @@ public class DigitToWordController {
 
 	@PostMapping(value = "/digits/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	public DigitWord  digitToWord(@RequestBody Digit digit,HttpServletResponse response) {
+		System.out.println("digit:"+digit);
 		System.out.println(digit.getDigit());
+		System.out.println(digitService);
 		DigitWord digitWordBean = digitService.digitToWordConvert(digit.getDigit());
 		if (digitWordBean==null) {
 			
@@ -53,6 +55,8 @@ public class DigitToWordController {
 
 	@GetMapping(value = "/digits/{digit}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object getDigit(@PathVariable int digit,HttpServletResponse response) {
+		System.out.println(digit);
+		System.out.println(digitService.getMap().size());
 		DigitWord bean = digitService.getDigit(digit);
 		if (bean == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
